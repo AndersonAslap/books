@@ -7,3 +7,6 @@ Esses testes devem ser conferidos automaticamente.
 
 > A refatoração altera os programas em passos pequenos, de modo que, se você
 cometer um erro, será fácil localizar o bug.
+
+> Qualquer tolo consegue escrever códigos que um computador possa entender.
+Bons programadores escrevem códigos que os seres humanos podem entender.
