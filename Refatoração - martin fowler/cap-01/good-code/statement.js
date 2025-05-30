@@ -7,10 +7,10 @@ function statement(invoice, plays) {
         volumeCredits += volumeCreditsFor(perf, plays);
 
         // exibe a linha para esta requisição
-        result += ` ${playFor(perf, plays).name}: ${usd(amountFor(perf, playFor(perf, plays))/100)} (${perf.audience} seats)\n`;
+        result += ` ${playFor(perf, plays).name}: ${usd(amountFor(perf, playFor(perf, plays)))} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf, playFor(perf, plays));
     }
-    result += `Amount owed is ${usd(totalAmount/100)}\n`;
+    result += `Amount owed is ${usd(totalAmount)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
 }
@@ -52,7 +52,7 @@ function volumeCreditsFor(aPerformance, plays) {
 
 function usd(aNumber) {
     return new Intl.NumberFormat("es-US",
-                        { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(aNumber);
+                        { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(aNumber/100);
 }
 
 module.exports = statement;
