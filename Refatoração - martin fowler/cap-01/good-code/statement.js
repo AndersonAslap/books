@@ -6,16 +6,14 @@ function statement(invoice, plays) {
                         { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format;
 
     for (let perf of invoice.performances) {
-        let thisAmount = amountFor(perf, playFor(perf, plays));
-
         // soma créditos por volume
         volumeCredits += Math.max(perf.audience - 30, 0);
         // soma um crédito extra para cada dez espectadores de comédia 
         if ("comedy" == playFor(perf, plays).type) volumeCredits += Math.floor(perf.audience / 5);
 
         // exibe a linha para esta requisição
-        result += ` ${playFor(perf, plays).name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
-        totalAmount += thisAmount;
+        result += ` ${playFor(perf, plays).name}: ${format(amountFor(perf, playFor(perf, plays))/100)} (${perf.audience} seats)\n`;
+        totalAmount += amountFor(perf, playFor(perf, plays));
     }
     result += `Amount owed is ${format(totalAmount/100)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
