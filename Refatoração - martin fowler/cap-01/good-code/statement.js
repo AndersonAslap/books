@@ -2,16 +2,18 @@ function statement(invoice, plays) {
     const statementData = {};
     statementData.customer = invoice.customer;
     statementData.performances = invoice.performances.map(item => enrichPerformance(item, plays));
-    return renderPlainText(statementData, plays);
+    statementData.totalAmount = totalAmount(statementData.performances);
+    statementData.totalVolumeCredits = totalVolumeCredits(statementData.performances);
+    return renderPlainText(statementData);
 }
 
-function renderPlainText(data, plays) {
+function renderPlainText(data) {
     let result = `Statement for ${data.customer}\n`;
     for (let perf of data.performances) {
-        result += ` ${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
+        result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
     }
-    result += `Amount owed is ${usd(totalAmount(data.performances, plays))}\n`;
-    result += `You earned ${totalVolumeCredits(data.performances, plays)} credits\n`;
+    result += `Amount owed is ${usd(data.totalAmount)}\n`;
+    result += `You earned ${data.totalVolumeCredits} credits\n`;
     return result;
 }
 
@@ -41,10 +43,10 @@ function playFor(aPerformance, plays) {
     return plays[aPerformance.playID];
 }
 
-function volumeCreditsFor(aPerformance, plays) {
+function volumeCreditsFor(aPerformance) {
     let result = 0;
     result += Math.max(aPerformance.audience - 30, 0);
-    if ("comedy" == playFor(aPerformance, plays).type) {
+    if ("comedy" == aPerformance.play.type) {
         result += Math.floor(aPerformance.audience / 5);
     }     
     return result;
@@ -55,18 +57,18 @@ function usd(aNumber) {
                         { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(aNumber/100);
 }
 
-function totalVolumeCredits(aPerformances, plays) {
+function totalVolumeCredits(aPerformances) {
     let result = 0;
     for (let perf of aPerformances) {
-        result += volumeCreditsFor(perf, plays);
+        result += perf.volumeCredits;
     }
     return result;
 }
 
-function totalAmount(aPerformances, plays) {
+function totalAmount(aPerformances) {
     let result = 0;
     for (let perf of aPerformances) {
-        result += amountFor(perf, playFor(perf, plays));
+        result += perf.amount;
     }
     return result;
 }
@@ -74,6 +76,8 @@ function totalAmount(aPerformances, plays) {
 function enrichPerformance(aPerformance, plays) {
     const result = Object.assign({}, aPerformance);
     result.play = playFor(aPerformance, plays);
+    result.amount = amountFor(result);
+    result.volumeCredits = volumeCreditsFor(result);
     return result;
 }
 
