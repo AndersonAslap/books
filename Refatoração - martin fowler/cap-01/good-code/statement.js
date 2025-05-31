@@ -1,10 +1,14 @@
 function statement(invoice, plays) {
+    return renderPlainText(createStatementData(invoice, plays));
+}
+
+function createStatementData(invoice, plays) {
     const statementData = {};
     statementData.customer = invoice.customer;
     statementData.performances = invoice.performances.map(item => enrichPerformance(item, plays));
     statementData.totalAmount = totalAmount(statementData.performances);
     statementData.totalVolumeCredits = totalVolumeCredits(statementData.performances);
-    return renderPlainText(statementData);
+    return statementData;
 }
 
 function renderPlainText(data) {
@@ -59,7 +63,7 @@ function usd(aNumber) {
 
 function totalAmount(aPerformances) {
     return aPerformances
-        .reduce((total, p) => total + p.amount)
+        .reduce((total, p) => total + p.amount, 0);
 }
 
 function totalVolumeCredits(aPerformances) {
