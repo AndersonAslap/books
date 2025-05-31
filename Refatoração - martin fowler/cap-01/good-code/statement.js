@@ -57,20 +57,14 @@ function usd(aNumber) {
                         { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(aNumber/100);
 }
 
-function totalVolumeCredits(aPerformances) {
-    let result = 0;
-    for (let perf of aPerformances) {
-        result += perf.volumeCredits;
-    }
-    return result;
+function totalAmount(aPerformances) {
+    return aPerformances
+        .reduce((total, p) => total + p.amount)
 }
 
-function totalAmount(aPerformances) {
-    let result = 0;
-    for (let perf of aPerformances) {
-        result += perf.amount;
-    }
-    return result;
+function totalVolumeCredits(aPerformances) {
+    return aPerformances
+        .reduce((total, p) => total + p.volumeCredits, 0);
 }
 
 function enrichPerformance(aPerformance, plays) {
